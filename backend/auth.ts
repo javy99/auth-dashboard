@@ -84,7 +84,7 @@ router.post("/login", async (ctx: Context) => {
 
   ctx.cookies.set("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: true,
+    // secure: true,
     sameSite: "strict",
     path: "/",
   });
@@ -131,7 +131,7 @@ router.post("/refresh", async (ctx: Context) => {
 
   ctx.cookies.set("refreshToken", newRefreshToken, {
     httpOnly: true,
-    secure: true,
+    // secure: true,
     sameSite: "strict",
     path: "/",
   });
@@ -151,6 +151,7 @@ router.post("/logout", async (ctx: Context) => {
 
 router.get("/me", authMiddleware, async (ctx: Context) => {
   const user = db.getUserById(ctx.state.user.userId);
+
   if (!user) {
     ctx.response.status = 404;
     ctx.response.body = { error: "User not found" };

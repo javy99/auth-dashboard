@@ -7,6 +7,7 @@ export async function authMiddleware(
 ) {
   try {
     const authHeader = ctx.request.headers.get("Authorization");
+
     if (!authHeader?.startsWith("Bearer ")) {
       throw new Error("No token provided");
     }
@@ -21,6 +22,8 @@ export async function authMiddleware(
     ctx.state.user = payload;
     await next();
   } catch (error) {
+    console.log(error);
+
     ctx.response.status = 401;
     ctx.response.body = { error: "Unauthorized" };
   }

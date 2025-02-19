@@ -25,6 +25,8 @@ class JWT {
       if (signature !== validSignature) return null;
 
       const decodedPayload = JSON.parse(atob(payload));
+      console.log(decodedPayload);
+
       if (decodedPayload.exp < Date.now()) return null;
 
       return decodedPayload;
