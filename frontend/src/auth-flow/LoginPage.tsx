@@ -1,7 +1,6 @@
+import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
-import { Mail, Lock } from "lucide-react";
 import { Link } from "react-router";
-import { Container } from "./components/Container";
 
 export function LoginPage({ onError }: any) {
   const [formData, setFormData] = useState({
@@ -22,7 +21,7 @@ export function LoginPage({ onError }: any) {
   };
 
   return (
-    <Container>
+    <>
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900">
           Sign in to your account
@@ -118,6 +117,6 @@ export function LoginPage({ onError }: any) {
           Sign in
         </button>
       </form>
-    </Container>
+    </>
   );
 }
