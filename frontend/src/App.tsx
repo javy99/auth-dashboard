@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import { AuthFlowLayout } from "./auth-flow/AuthFlowLayout";
-import { ForgotPasswordPage } from "./auth-flow/ForgotPasswordPage";
-import { LoginPage } from "./auth-flow/LoginPage";
-import { RegisterPage } from "./auth-flow/RegisterPage";
-import { ResetPasswordPage } from "./auth-flow/ResetPasswordPage";
-import { AuthBoundary } from "./dashboard/AuthBoundary";
-import { ProfilePage } from "./dashboard/ProfilePage";
-import { ProjectsPage } from "./dashboard/ProjectsPage";
+import { AuthFlowLayout } from "./pages/auth-flow/AuthFlowLayout";
+import { ForgotPasswordPage } from "./pages/auth-flow/ForgotPasswordPage";
+import { LoginPage } from "./pages/auth-flow/LoginPage";
+import { RegisterPage } from "./pages/auth-flow/RegisterPage";
+import { ResetPasswordPage } from "./pages/auth-flow/ResetPasswordPage";
+import { AuthBoundary } from "./pages/dashboard/AuthBoundary";
+import { ProfilePage } from "./pages/dashboard/ProfilePage";
+import { ProjectsPage } from "./pages/dashboard/ProjectsPage";
 
 export default function App() {
   return (

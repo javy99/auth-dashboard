@@ -1,7 +1,9 @@
 import { LayoutDashboardIcon, LogOutIcon, UserCircleIcon } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 
 export function Sidebar() {
+  const navigate = useNavigate();
+
   return (
     <nav className="bg-white shadow-lg h-screen sticky top-0 left-0 w-[240px] py-6 px-4 font-[sans-serif] overflow-y-auto">
       <ul>
@@ -40,7 +42,7 @@ export function Sidebar() {
 
           <li>
             <a
-              onClick={() => void 0}
+              onClick={() => navigate("/login")}
               className="text-black hover:text-blue-600 text-[15px] flex gap-2 items-center hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
             >
               <LogOutIcon />
