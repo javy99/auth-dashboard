@@ -1,8 +1,10 @@
 import { LayoutDashboardIcon, LogOutIcon, UserCircleIcon } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
+import { useLogout } from "../AuthContext";
 
 export function Sidebar() {
   const navigate = useNavigate();
+  const logout = useLogout();
 
   return (
     <nav className="bg-white shadow-lg h-screen sticky top-0 left-0 w-[240px] py-6 px-4 font-[sans-serif] overflow-y-auto">
@@ -42,7 +44,7 @@ export function Sidebar() {
 
           <li>
             <a
-              onClick={() => navigate("/login")}
+              onClick={() => logout().then(() => navigate("/login"))}
               className="text-black hover:text-blue-600 text-[15px] flex gap-2 items-center hover:bg-blue-50 rounded px-4 py-2.5 transition-all"
             >
               <LogOutIcon />

@@ -1,8 +1,8 @@
-import { Router, Context, bcrypt } from "./deps.ts";
+import { CONFIG } from "./config.ts";
 import { DB } from "./db.ts";
+import { Context, Router, bcrypt } from "./deps.ts";
 import { accessTokenJWT, refreshTokenJWT } from "./jwt.ts";
 import { authMiddleware } from "./middleware/auth.ts";
-import { CONFIG } from "./config.ts";
 
 interface TokenSignPayload {
   userId: string;
@@ -10,6 +10,8 @@ interface TokenSignPayload {
 }
 
 const db = new DB();
+/** Create default user */
+db.createUser("admin@x.com", await bcrypt.hash("12345"));
 
 export const router = new Router();
 
@@ -40,9 +42,7 @@ router.post("/register", async (ctx: Context) => {
 
   ctx.cookies.set("refreshToken", refreshToken, {
     httpOnly: true,
-    // secure: true,
-    sameSite: "strict",
-    path: "/",
+    expires: new Date(Date.now() + CONFIG.REFRESH_TOKEN_EXPIRES_IN),
   });
 
   ctx.response.status = 201;
@@ -72,21 +72,19 @@ router.post("/login", async (ctx: Context) => {
 
   const accessToken = await accessTokenJWT.sign(
     { userId: user.id, email },
-    15 * 60
+    CONFIG.ACCESS_TOKEN_EXPIRES_IN
   );
 
   const refreshToken = await refreshTokenJWT.sign(
     { userId: user.id, email },
-    7 * 24 * 60 * 60
+    CONFIG.REFRESH_TOKEN_EXPIRES_IN
   );
 
   db.storeRefreshToken(refreshToken);
 
   ctx.cookies.set("refreshToken", refreshToken, {
     httpOnly: true,
-    // secure: true,
-    sameSite: "strict",
-    path: "/",
+    expires: new Date(Date.now() + CONFIG.REFRESH_TOKEN_EXPIRES_IN),
   });
 
   ctx.response.body = {
@@ -131,9 +129,7 @@ router.post("/refresh", async (ctx: Context) => {
 
   ctx.cookies.set("refreshToken", newRefreshToken, {
     httpOnly: true,
-    // secure: true,
-    sameSite: "strict",
-    path: "/",
+    expires: new Date(Date.now() + CONFIG.REFRESH_TOKEN_EXPIRES_IN),
   });
 
   ctx.response.body = { accessToken: newAccessToken };
@@ -141,6 +137,7 @@ router.post("/refresh", async (ctx: Context) => {
 
 router.post("/logout", async (ctx: Context) => {
   const refreshToken = await ctx.cookies.get("refreshToken");
+
   if (refreshToken) {
     db.removeRefreshToken(refreshToken);
   }

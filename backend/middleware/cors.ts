@@ -6,7 +6,7 @@ export async function corsMiddleware(
 ) {
   ctx.response.headers.set(
     "Access-Control-Allow-Origin",
-    "http://localhost:3000"
+    "http://localhost:5173"
   );
   ctx.response.headers.set("Access-Control-Allow-Credentials", "true");
   ctx.response.headers.set(

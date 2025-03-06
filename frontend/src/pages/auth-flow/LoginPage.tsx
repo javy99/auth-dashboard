@@ -1,22 +1,48 @@
+import ky, { HTTPError } from "ky";
 import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { useMutation } from "react-query";
+import { Link, useNavigate } from "react-router";
+import { useSetAccessToken } from "../../AuthContext";
+import {
+  API_BASE,
+  LoginRequestBody,
+  LoginResponse,
+} from "../../data/httpClient";
 
-export function LoginPage({ onError }: any) {
+export function LoginPage() {
+  const setAccessToken = useSetAccessToken();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  const loginRequest = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (body: LoginRequestBody) =>
+      ky
+        .post<LoginResponse>(`${API_BASE}/login`, {
+          json: body,
+          credentials: "include",
+        })
+        .json(),
+  });
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     try {
-      // Add your login logic here
-      console.log("Login attempt:", formData);
-      // Example error handling:
-      // onError('Invalid credentials');
+      const { accessToken } = await loginRequest.mutateAsync(formData);
+      setAccessToken(accessToken);
+      navigate("/");
     } catch (error) {
-      onError((error as Error).message);
+      const httpError = error as HTTPError;
+      const response = await httpError?.response.json();
+      console.error(error);
+      console.error(JSON.stringify(response));
+      alert(JSON.stringify(response));
     }
   };
 
