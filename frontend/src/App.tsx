@@ -10,19 +10,34 @@ import { ProfilePage } from "./pages/dashboard/ProfilePage";
 import { ProjectsPage } from "./pages/dashboard/ProjectsPage";
 import { ProtectedRoutes } from "./pages/dashboard/ProtectedRoutes";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: "always",
+      staleTime: Infinity,
+    },
+    mutations: {
+      retry: false,
+    },
+  },
+});
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContext>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthContext>
           <Routes>
             <Route element={<AuthFlowLayout />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route
+                path="/reset-password/:resetToken"
+                element={<ResetPasswordPage />}
+              />
             </Route>
 
             <Route element={<ProtectedRoutes />}>
@@ -34,8 +49,8 @@ export default function App() {
 
             <Route path="*" element={<div>Not found</div>} />
           </Routes>
-        </BrowserRouter>
-      </AuthContext>
+        </AuthContext>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

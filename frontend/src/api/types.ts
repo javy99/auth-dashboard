@@ -1,5 +1,3 @@
-export const API_BASE = "http://localhost:8000";
-
 export interface User {
   id: string;
   email: string;
@@ -25,4 +23,8 @@ export interface RegisterRequestBody {
 export interface RegisterResponse {
   accessToken: string;
   user: User;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
 }

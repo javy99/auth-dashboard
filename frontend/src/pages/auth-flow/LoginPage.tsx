@@ -1,42 +1,40 @@
-import ky, { HTTPError } from "ky";
+import { HTTPError } from "ky";
 import { Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "react-query";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useSetAccessToken } from "../../AuthContext";
-import {
-  API_BASE,
-  LoginRequestBody,
-  LoginResponse,
-} from "../../data/httpClient";
+
+import { useAuthRequests } from "../../api/auth";
+import { LoginRequestBody } from "../../api/types";
 
 export function LoginPage() {
+  const { requestLogin } = useAuthRequests();
   const setAccessToken = useSetAccessToken();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const backUrl = searchParams.get("searchParams");
 
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: "admin@x.com",
+    password: "12345",
   });
 
-  const loginRequest = useMutation({
+  const { mutateAsync: loginUser } = useMutation({
     mutationKey: ["login"],
-    mutationFn: (body: LoginRequestBody) =>
-      ky
-        .post<LoginResponse>(`${API_BASE}/login`, {
-          json: body,
-          credentials: "include",
-        })
-        .json(),
+    mutationFn: (body: LoginRequestBody) => requestLogin(body),
   });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
-      const { accessToken } = await loginRequest.mutateAsync(formData);
+      const { accessToken } = await loginUser(formData);
       setAccessToken(accessToken);
-      navigate("/");
+      console.log({ backUrl });
+
+      console.log("navigating");
+      navigate(backUrl || "/", { replace: true });
     } catch (error) {
       const httpError = error as HTTPError;
       const response = await httpError?.response.json();
@@ -130,6 +128,7 @@ export function LoginPage() {
 
           <Link
             to="/forgot-password"
+            state={{ fromLogin: true }}
             className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
           >
             Forgot your password?

@@ -1,10 +1,22 @@
-import { useState } from "react";
 import { Lock } from "lucide-react";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { Navigate, useParams } from "react-router";
 
 export function ResetPasswordPage({ onError }: any) {
+  const params = useParams();
+
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
+  });
+
+  // Check reset password token validity
+  const { data, isLoading, error } = useQuery({
+    queryFn: () => Promise.resolve(params.resetToken),
+    // ky.post(`${API_BASE}/validate-reset-token`, {
+    //   json: { resetToken: params.resetToken },
+    // }),
   });
 
   const handleSubmit = async (e: any) => {
@@ -14,11 +26,22 @@ export function ResetPasswordPage({ onError }: any) {
         throw new Error("Passwords do not match");
       }
       // Add your registration logic here
+      console.log("Reset password token validity", data);
       console.log("Registration attempt:", formData);
     } catch (error) {
       onError((error as Error).message);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    console.log("Not valid token for password reset");
+
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>

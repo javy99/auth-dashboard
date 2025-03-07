@@ -1,6 +1,6 @@
 import { LayoutDashboardIcon, LogOutIcon, UserCircleIcon } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
-import { useLogout } from "../AuthContext";
+import { useLogout } from "../api/auth";
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export function Sidebar() {
       <ul>
         <li>
           <NavLink
-            to="/"
+            to="/projects"
             className={({ isActive }) =>
               `${
                 isActive ? "bg-blue-100" : ""

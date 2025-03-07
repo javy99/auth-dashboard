@@ -1,8 +1,9 @@
+import { ArrowRight, Mail } from "lucide-react";
 import { useState } from "react";
-import { Mail, ArrowRight } from "lucide-react";
-import { Link } from "react-router";
+import { Link, Navigate, useLocation } from "react-router";
 
 export function ForgotPasswordPage({ onError }: any) {
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
@@ -16,6 +17,10 @@ export function ForgotPasswordPage({ onError }: any) {
       onError((error as Error).message);
     }
   };
+
+  if (!location.state?.fromLogin) {
+    return <Navigate to="/login" replace />;
+  }
 
   if (submitted) {
     return (
@@ -38,7 +43,7 @@ export function ForgotPasswordPage({ onError }: any) {
     <>
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900">
-          Reset your password
+          Forgot your password?
         </h2>
         <p className="mt-2 text-gray-600">
           Enter your email address and we'll send you instructions to reset your

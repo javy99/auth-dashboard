@@ -1,17 +1,15 @@
-import ky, { HTTPError } from "ky";
+import { HTTPError } from "ky";
 import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { Link, useNavigate } from "react-router";
 import { useSetAccessToken } from "../../AuthContext";
-import {
-  API_BASE,
-  RegisterRequestBody,
-  RegisterResponse,
-} from "../../data/httpClient";
+import { useAuthRequests } from "../../api/auth";
+import { RegisterRequestBody } from "../../api/types";
 
 // Register Form Component
 export function RegisterPage() {
+  const { requestRegister } = useAuthRequests();
   const setAccessToken = useSetAccessToken();
   const navigate = useNavigate();
 
@@ -22,15 +20,9 @@ export function RegisterPage() {
     confirmPassword: "",
   });
 
-  const registerRequest = useMutation({
+  const { mutateAsync: registerUser } = useMutation({
     mutationKey: ["register"],
-    mutationFn: (body: RegisterRequestBody) =>
-      ky
-        .post<RegisterResponse>(`${API_BASE}/register`, {
-          json: body,
-          credentials: "include",
-        })
-        .json(),
+    mutationFn: (body: RegisterRequestBody) => requestRegister(body),
   });
 
   const handleSubmit = async (e: any) => {
@@ -41,9 +33,10 @@ export function RegisterPage() {
         throw new Error("Passwords do not match");
       }
 
-      const { accessToken } = await registerRequest.mutateAsync(formData);
+      const { accessToken } = await registerUser(formData);
+
       setAccessToken(accessToken);
-      navigate("/");
+      navigate("/", { replace: true });
     } catch (error) {
       const httpError = error as HTTPError;
       const response = await httpError?.response.json();

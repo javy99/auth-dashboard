@@ -25,5 +25,7 @@ mainRouter.post("/echo", authMiddleware, (ctx: Context) => {
   ctx.response.body = ctx.request.body().value;
 });
 
+app.use(mainRouter.routes());
+
 console.log("Server running on http://localhost:8000");
 await app.listen({ port: 8000 });

@@ -146,7 +146,7 @@ router.post("/logout", async (ctx: Context) => {
   ctx.response.body = { message: "Logged out successfully" };
 });
 
-router.get("/me", authMiddleware, async (ctx: Context) => {
+router.get("/me", authMiddleware, (ctx: Context) => {
   const user = db.getUserById(ctx.state.user.userId);
 
   if (!user) {

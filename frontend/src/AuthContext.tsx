@@ -1,11 +1,8 @@
-import ky from "ky";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
-import { API_BASE } from "./data/httpClient";
 
 const Context = createContext<{
   accessToken?: string;
-  setAccessToken: (token: string) => void;
-  logout: () => Promise<unknown>;
+  setAccessToken: (token: string | undefined) => void;
 } | null>(null);
 
 /*
@@ -17,7 +14,6 @@ const Context = createContext<{
   It makes it easier to identify:
     1. where access token is consumed
     2. where access token is set
-    3. where logout is called
 */
 export function useAccessToken() {
   const context = useContext(Context);
@@ -36,26 +32,7 @@ export function useSetAccessToken() {
   return context.setAccessToken;
 }
 
-export function useLogout() {
-  const context = useContext(Context);
-
-  if (!context)
-    throw new Error("useSetAccessToken is used outside AuthContext");
-
-  return context.logout;
-}
-
 export function AuthContext({ children }: PropsWithChildren) {
   const [accessToken, setAccessToken] = useState<string>();
-
-  const logout = async () => {
-    setAccessToken(undefined);
-    await ky.post(`${API_BASE}/logout`, { credentials: "include" }).json();
-  };
-
-  return (
-    <Context value={{ accessToken, setAccessToken, logout }}>
-      {children}
-    </Context>
-  );
+  return <Context value={{ accessToken, setAccessToken }}>{children}</Context>;
 }
