@@ -50,20 +50,12 @@ async function requestLogout() {
 }
 
 export function useAuthRequests() {
-  return useMemo(
-    () => ({
-      requestLogin,
-      requestRegister,
-      requestLogout,
-    }),
-    []
-  );
+  return useMemo(() => ({ requestLogin, requestRegister }), []);
 }
 
 export function useLogout() {
   const navigate = useNavigate();
   const setAccessToken = useSetAccessToken();
-  const { requestLogout } = useAuthRequests();
 
   return async () => {
     await requestLogout();
