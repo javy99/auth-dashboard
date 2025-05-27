@@ -41,6 +41,7 @@ yarn install
 yarn dev
 ```
 
+
 ## Technologies
 
 ### Frontend
